@@ -1,0 +1,101 @@
+---
+
+- hosts: all
+  become: true
+
+  roles:
+    - docker
+
+- hosts: grafana
+  become: true
+
+  tasks:
+  - name: Set permissions on volumes
+    ansible.builtin.file:
+      path: /grafana
+      owner: 472
+
+  - name: Create grafana container
+    community.docker.docker_container:
+      name: grafana
+      image: grafana/grafana
+      ports:
+        - "3000:3000"
+      restart_policy: unless-stopped
+      volumes:
+        - /grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+        - /grafana/grafana:/var/lib/grafana
+
+- hosts: prometheus
+  become: true
+
+  tasks:
+  - name: Set permissions on volumes
+    ansible.builtin.file:
+      path: /prometheus
+      owner: 65534
+      group: 65534
+
+  - name: Create prometheus container
+    community.docker.docker_container:
+      name: prometheus
+      image: prom/prometheus
+      ports:
+        - "9090:9090"
+      restart_policy: unless-stopped
+      volumes:
+        - /prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+        - /prometheus/data:/prometheus
+      command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+        # - '--storage.tsdb.path=/prometheus'
+        # - '--web.console.libraries=/etc/prometheus/console_libraries'
+        # - '--web.console.templates=/etc/prometheus/consoles'
+        # - '--web.enable-lifecycle'
+
+
+- hosts: lb, web1, web2
+  become: true
+
+  tasks:
+    - name: Create nginx container
+      community.docker.docker_container:
+        name: nginx
+        image: nginx
+        ports:
+          - "80:80"
+          - "8080:8080"
+        restart_policy: unless-stopped
+        volumes:
+          - "/nginx_common:/nginx_common"
+          - "/nginx/nginx.conf:/etc/nginx/nginx.conf"
+
+    - name: Create nginx-prometheus-exporter container
+      community.docker.docker_container:
+        name: nginx-prometheus-exporter
+        image: nginx/nginx-prometheus-exporter
+        ports:
+          - "9913:9913"
+        restart_policy: unless-stopped
+
+    - name: Create node-exporter container
+      community.docker.docker_container:
+        name: node-exporter
+        image: prom/node-exporter
+        ports:
+          - 9100:9100
+        restart_policy: unless-stopped
+        volumes:
+          - /proc:/host/proc:ro
+          - /sys:/host/sys:ro
+          - /:/rootfs:ro
+        command:
+          - '--path.procfs=/host/proc'
+          - '--path.rootfs=/rootfs'
+          - '--path.sysfs=/host/sys'
+          - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+
+    - name: Reload nginx config
+      community.docker.docker_container_exec:
+        container: nginx
+        command: "nginx -s reload"
