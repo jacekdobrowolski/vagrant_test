@@ -1,20 +1,19 @@
 global:
-  scrape_interval: 1m
+  scrape_interval: 10s
 
 scrape_configs:
   - job_name: "prometheus"
-    scrape_interval: 1m
     static_configs:
-      - targets: ["10.0.0.5:9090"]
+      - targets: ["192.168.56.5:9090"]
 
   - job_name: "lb-node"
     static_configs:
-      - targets: ["10.0.0.2:9100", "10.0.0.2:9913"]
+      - targets: ["192.168.56.2:9100", "192.168.56.2:9113"]
 
   - job_name: "web1-node"
     static_configs:
-      - targets: ["10.0.0.10:9100", "10.0.0.10:9913"]
+      - targets: ["192.168.56.10:9100", "192.168.56.10:9113"]
 
   - job_name: "web2-node"
     static_configs:
-      - targets: ["10.0.0.11:9100", "10.0.0.11:9913"]
+      - targets: ["192.168.56.11:9100", "192.168.56.11:9113"]
