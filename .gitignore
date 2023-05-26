@@ -1,2 +1,4 @@
 /.vagrant/
 /grafana/
+!/grafana/.gitkeep
+/prometheus/data/
