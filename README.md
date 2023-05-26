@@ -12,4 +12,4 @@ Usage:
 ``` bash
 vagrant up --provision
 ```
-Or use './vagrant_up_parallel' convinience script to provision machinees in parallel, recommended after vm base image is created during first serial execution.
+Or use './vagrant_up_parallel' convenience script to provision machines in parallel, recommended after vm base image is created during first serial execution.

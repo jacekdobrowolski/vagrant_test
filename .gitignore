@@ -1,3 +1,2 @@
-.vagrant
-prometheus/data/
-grafana/
+/.vagrant/
+/grafana/
