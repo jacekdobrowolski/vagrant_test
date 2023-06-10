@@ -1,0 +1,12 @@
+groups:
+  - name: example
+    rules:
+      - alert: web1InstanceDown
+        expr: up{job = "web1-node"} == 0 or nginx_up{job="web1-node"} == 0
+        for: 5s
+      - alert: web2InstanceDown
+        expr: up{job = "web2-node"} == 0 or nginx_up{job="web2-node"} == 0
+        for: 5s
+      - alert: lbInstanceDown
+        expr: up{job = "lb-node"} == 0 or nginx_up{job="lb-node"} == 0
+        for: 5s

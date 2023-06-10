@@ -1,0 +1,3 @@
+[submodule "prometheus-am-executor/prometheus-am-executor"]
+	path = prometheus-am-executor/prometheus-am-executor
+	url = https://github.com/imgix/prometheus-am-executor.git

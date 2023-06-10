@@ -18,3 +18,14 @@ Or use './vagrant_up_parallel' convinience script to provision machinees in para
 vagrant ssh k6
 sudo docker run -it -v="/k6:/k6" grafana/k6 run /k6/script.js
 ```
+
+To run prometheus alertmanager executor:
+first build
+``` bash
+cd prometheus-am-executor/prometheus-am-executor
+go build
+```
+then run
+``` bash
+./prometheus-am-executor/prometheus-am-executor/prometheus-am-executor -f prometheus-am-executor/executor.yml
+```
