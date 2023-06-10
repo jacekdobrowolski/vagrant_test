@@ -1,0 +1,16 @@
+---
+listen_address: ":8088"
+verbose: true
+commands:
+  - cmd: vagrant
+    args: ["up", "web1", "--provision"]
+    match_labels:
+      alertname: web1InstanceDown
+  - cmd: vagrant
+    args: ["up", "web2", "--provision"]
+    match_labels:
+      alertname: web2InstanceDown
+  - cmd: vagrant
+    args: ["up", "lb", "--provision"]
+    match_labels:
+      alertname: lbInstanceDown

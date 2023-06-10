@@ -1,0 +1,11 @@
+route:
+  receiver: executor
+  group_wait: 1s
+  group_interval: 1s
+  routes:
+  - receiver: executor
+
+receivers:
+  - name: executor
+    webhook_configs:
+      - url: http://192.168.56.1:8088
